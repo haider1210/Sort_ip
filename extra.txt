@@ -1,0 +1,73 @@
+The reason for converting the IP address parts into a tuple of integers rather than just using the list of string parts directly is to ensure correct numerical comparison. Here's a detailed explanation:
+
+### Key Differences
+
+1. **String Comparison**:
+   - When comparing strings, the comparison is done lexicographically (dictionary order), which means character by character from left to right.
+   - For example, the string "192" is less than "2" because '1' < '2'.
+
+2. **Integer Comparison**:
+   - When comparing integers, the comparison is numerical, meaning that the values are compared based on their numerical value.
+   - For example, the integer 192 is greater than 2.
+
+### Example to Illustrate the Difference
+
+Consider the IP addresses "10.0.0.2" and "10.0.0.10":
+
+- **String Comparison**:
+  - Split parts: "10.0.0.2" becomes `['10', '0', '0', '2']` and "10.0.0.10" becomes `['10', '0', '0', '10']`.
+  - Lexicographical comparison: The comparison of '2' and '10' as strings results in '2' being considered greater than '10', which is incorrect numerically.
+
+- **Integer Comparison**:
+  - Split parts: "10.0.0.2" becomes `[10, 0, 0, 2]` and "10.0.0.10" becomes `[10, 0, 0, 10]`.
+  - Numerical comparison: The comparison of 2 and 10 as integers results in 2 being less than 10, which is correct.
+
+### Sorting Using String vs. Integer Tuples
+
+- **String Comparison Example**:
+  ```python
+  free_ip = ["10.0.0.2", "10.0.0.10"]
+  free_ip.sort(key=lambda ip: ip.split('.'))
+  print(free_ip)
+  ```
+  Output:
+  ```
+  ['10.0.0.10', '10.0.0.2']
+  ```
+  This output is incorrect for numerical ordering.
+
+- **Integer Tuple Comparison Example**:
+  ```python
+  free_ip = ["10.0.0.2", "10.0.0.10"]
+  free_ip.sort(key=lambda ip: tuple(map(int, ip.split('.'))))
+  print(free_ip)
+  ```
+  Output:
+  ```
+  ['10.0.0.2', '10.0.0.10']
+  ```
+  This output is correct for numerical ordering.
+
+### Conclusion
+
+To ensure that the IP addresses are sorted in the correct numerical order, each part of the IP address must be compared numerically, not lexicographically. Converting each part of the IP address to an integer and then creating a tuple allows Python's sorting mechanism to compare the parts correctly as integers.
+
+### Full Correct Example
+
+```python
+# List of IP addresses
+free_ip = ["192.168.1.1", "10.0.0.1", "172.16.0.1", "10.0.0.2", "10.0.0.10"]
+
+# Sort the IP addresses
+free_ip.sort(key=lambda ip: tuple(map(int, ip.split('.'))))
+
+# Print the sorted list
+print(free_ip)
+```
+
+Output:
+```
+['10.0.0.1', '10.0.0.2', '10.0.0.10', '172.16.0.1', '192.168.1.1']
+```
+
+This ensures that the IP addresses are sorted in the correct numerical order.
